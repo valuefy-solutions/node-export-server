@@ -185,7 +185,6 @@ function embed(version, scripts, out, fn, optionals) {
     if (version) {
         version = version.trim();
     }
-
     if (version && parseInt(version[0]) < 5 && version[0] !== 'c') {
         scripts = scripts.concat(cdnLegacy);
     }
@@ -209,38 +208,40 @@ function embed(version, scripts, out, fn, optionals) {
 
         funs.push(function (next) {
             // If we've allready fetched the required script, just return it.
-            if (cachedScripts[fullURL]) {
-                console.log(('   using cached fetch for ' + fullURL).gray);
-                scriptBody += cachedScripts[fullURL] + ';';
-                return next();
-            }
+            // if (cachedScripts[fullURL]) {
+            //     console.log(('   using cached fetch for ' + fullURL).gray);
+            //     scriptBody += cachedScripts[fullURL] + ';';
+            //     return next();
+            // }
 
-            console.log('  ', (fullURL).gray);
+            // console.log('  ', (fullURL).gray);
 
-            request(fullURL, function (error, response, body) {
+            // request(fullURL, function (error, response, body) {
 
-                if (error) {
-                    if (optionals[scriptOriginal]) {
-                        console.log(`  ${script} is not available for v${version}`.gray)
-                        return next();
-                    }
+            //     if (error) {
+            //         if (optionals[scriptOriginal]) {
+            //             console.log(`  ${script} is not available for v${version}`.gray)
+            //             return next();
+            //         }
 
-                    return next(error, fullURL);
-                }
+            //         return next(error, fullURL);
+            //     }
 
-                if (body.trim().indexOf('<!DOCTYPE') === 0) {
-                    if (optionals[scriptOriginal]) {
-                        console.log(`   ${script.substr(script.lastIndexOf('/') + 1)} is not available for v${version}, skipped..`.yellow);
-                        return next();
-                    }
+            //     if (body.trim().indexOf('<!DOCTYPE') === 0) {
+            //         if (optionals[scriptOriginal]) {
+            //             console.log(`   ${script.substr(script.lastIndexOf('/') + 1)} is not available for v${version}, skipped..`.yellow);
+            //             return next();
+            //         }
 
-                    return next(404, script);
-                }
+            //         return next(404, script);
+            //     }
 
-                cachedScripts[fullURL] = body;
-                scriptBody += body + ';';
-                next();
-            });
+            //     cachedScripts[fullURL] = body;
+            //     scriptBody += body + ';';
+            //     next();
+            // });
+            scriptBody += fs.readFileSync(__dirname + '/highcharts.js').toString();
+            next();
         });
     });
 
@@ -287,7 +288,6 @@ function embedAll(version, includeStyled, includeMaps, includeMoment, includeGan
     var standard = cdnScriptsStandard.concat(cdnScriptsCommon).concat(cdnAdditional),
         styled = cdnScriptsStyled.concat(cdnScriptsCommon).concat(cdnAdditional)
         ;
-    console.log('standard'.blue, standard.blue)
     optionals = optionals || {};
 
     if (includeMaps) {
@@ -360,15 +360,15 @@ function startPrompt() {
     //   prompt.get(schema, function (err, result) {
     //     result.agree = result.agree.toUpperCase();
 
-    cdnURL = result.cdnURL || cdnURL;
+    //cdnURL = result.cdnURL || cdnURL;
 
     // if (result.agree === 'Y' || result.agree === 'YES') {
-    embedAll('latest',
-        useIfDefined(process.env.HIGHCHARTS_VERSION, 'latest'),
-        useIfDefined(process.env.HIGHCHARTS_USE_STYLED, true),
-        useIfDefined(process.env.HIGHCHARTS_USE_MAPS, true),
-        useIfDefined(process.env.HIGHCHARTS_MOMENT, false),
-        useIfDefined(process.env.HIGHCHARTS_USE_GANTT, true)
+    embedAll(
+        'latest',
+        true,
+        true,
+        false,
+        true
     );
     // } else {
     //     console.log('License terms not accepted, aborting'.red);

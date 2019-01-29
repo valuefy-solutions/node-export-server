@@ -30,5 +30,19 @@
   },
   "engines": {
     "node": ">=5.10.0"
-  }
+  },
+  "bundledDependencies": [
+    "async",
+    "express-rate-limit",
+    "mkdirp",
+    "colors",
+    "express",
+    "phantomjs-prebuilt",
+    "body-parser",
+    "prompt",
+    "request",
+    "express-form-data",
+    "cors",
+    "uuid"
+  ]
 }

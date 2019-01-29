@@ -185,7 +185,6 @@ function embed(version, scripts, out, fn, optionals) {
     if (version) {
         version = version.trim();
     }
-    console.log('version', version);
     if (version && parseInt(version[0]) < 5 && version[0] !== 'c') {
         scripts = scripts.concat(cdnLegacy);
     }
@@ -289,7 +288,6 @@ function embedAll(version, includeStyled, includeMaps, includeMoment, includeGan
     var standard = cdnScriptsStandard.concat(cdnScriptsCommon).concat(cdnAdditional),
         styled = cdnScriptsStyled.concat(cdnScriptsCommon).concat(cdnAdditional)
         ;
-    console.log('standard'.blue, standard.blue)
     optionals = optionals || {};
 
     if (includeMaps) {

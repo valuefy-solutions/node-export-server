@@ -54,7 +54,7 @@ const cdnScriptsQuery = {
 };
 
 // Push raw URL's here to force include them
-const cdnAdditional = [];
+const cdnAdditional = ["rounded-corners.js"];
 
 // Push map collection includes here
 const cdnMapCollection = [];

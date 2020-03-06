@@ -54,6 +54,7 @@ const cdnScriptsQuery = {
 };
 
 // Push raw URL's here to force include them
+// highchart column border radius changes
 const cdnAdditional = ["rounded-corners.js"];
 
 // Push map collection includes here

@@ -45,32 +45,33 @@ let useNPM = true;
 // We allow the fetch for these to fail without error.
 // This is because it's only available in version 6+
 const cdnScriptsOptional = {
-  '{{version}}/modules/sunburst.js': 1,
-  '{{version}}/modules/xrange.js': 1,
-  '{{version}}/modules/streamgraph.js': 1,
-  '{{version}}/modules/sankey.js': 1,
-  '{{version}}/modules/tilemap.js': 1,
-  '{{version}}/modules/histogram-bellcurve.js': 1,
-  '{{version}}/modules/bullet.js': 1,
-  '{{version}}/modules/organization.js': 1,
-  '{{version}}/modules/funnel3d.js': 1,
-  '{{version}}/modules/pyramid3d.js': 1,
-  '{{version}}/modules/dependency-wheel.js': 1,
-  '{{version}}/modules/item-series.js': 1,
-  '{{version}}/modules/timeline.js': 1,
-  '{{version}}/modules/pareto.js': 1,
-  '{{version}}/modules/coloraxis.js': 1,
-  '{{version}}/modules/venn.js': 1
+    '{{version}}/modules/sunburst.js': 1,
+    '{{version}}/modules/xrange.js': 1,
+    '{{version}}/modules/streamgraph.js': 1,
+    '{{version}}/modules/sankey.js': 1,
+    '{{version}}/modules/tilemap.js': 1,
+    '{{version}}/modules/histogram-bellcurve.js': 1,
+    '{{version}}/modules/bullet.js': 1,
+    '{{version}}/modules/organization.js': 1,
+    '{{version}}/modules/funnel3d.js': 1,
+    '{{version}}/modules/pyramid3d.js': 1,
+    '{{version}}/modules/dependency-wheel.js': 1,
+    '{{version}}/modules/item-series.js': 1,
+    '{{version}}/modules/timeline.js': 1,
+    '{{version}}/modules/pareto.js': 1,
+    '{{version}}/modules/coloraxis.js': 1,
+    '{{version}}/modules/venn.js': 1
 };
 
 // The scripts here will appear as user prompts
 const cdnScriptsQuery = {
-  "wordcloud": "{{version}}/modules/wordcloud.js",
-  "annotations": "{{version}}/modules/annotations.js"
+    "wordcloud": "{{version}}/modules/wordcloud.js",
+    "annotations": "{{version}}/modules/annotations.js"
 };
 
 // Push raw URL's here to force include them
-const cdnAdditional = [];
+// column rounder corners added
+const cdnAdditional = ["rounded-corners.js"];
 
 // Push map collection includes here
 const cdnMapCollection = [];
@@ -121,11 +122,11 @@ const cachedScripts = {};
 ////////////////////////////////////////////////////////////////////////////////
 
 const boolConform = (value) => {
-  value = value.toUpperCase();
-  return value === 'Y'   ||
-         value === 'N'   ||
-         value === 'YES' ||
-         value === 'NO';
+    value = value.toUpperCase();
+    return value === 'Y' ||
+        value === 'N' ||
+        value === 'YES' ||
+        value === 'NO';
 };
 
 let schema = {
@@ -150,10 +151,10 @@ let schema = {
             conform: boolConform
         },
         gantt: {
-          description: 'Include Gantt? (requires Gantt license, and >V6.2)',
-          default: 'no',
-          required: true,
-          conform: boolConform
+            description: 'Include Gantt? (requires Gantt license, and >V6.2)',
+            default: 'no',
+            required: true,
+            conform: boolConform
         },
         styledMode: {
             description: 'Enable styled mode? (requires Highcharts/Highstock 5+ license)',
@@ -162,14 +163,14 @@ let schema = {
             conform: boolConform
         },
         moment: {
-          description: 'Include moment.js for date/time handling?',
-          default: 'no',
-          required: true,
-          conform: boolConform
+            description: 'Include moment.js for date/time handling?',
+            default: 'no',
+            required: true,
+            conform: boolConform
         },
         cdnURL: {
-          description: 'Which CDN would you like to use?',
-          default: process.env.HIGHCHARTS_CDN || cdnURL
+            description: 'Which CDN would you like to use?',
+            default: process.env.HIGHCHARTS_CDN || cdnURL
         }
     }
 };
@@ -179,12 +180,12 @@ let schema = {
 // Augment the schema with the query CDN scripts
 
 Object.keys(cdnScriptsQuery).forEach((name) => {
-  schema.properties[name] = {
-    description: `Enable ${name} support? y/n`,
-    required: false,
-    default: 'no',
-    conform: boolConform
-  };
+    schema.properties[name] = {
+        description: `Enable ${name} support? y/n`,
+        required: false,
+        default: 'no',
+        conform: boolConform
+    };
 });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +195,7 @@ require('colors');
 function embed(version, scripts, out, fn, optionals) {
     var funs = [],
         scriptBody = ''
-    ;
+        ;
 
     optionals = optionals || {};
 
@@ -202,7 +203,7 @@ function embed(version, scripts, out, fn, optionals) {
         version = version.trim();
     }
 
-    if (version && parseInt(version[0]) < 5 && version[0] !== 'c')  {
+    if (version && parseInt(version[0]) < 5 && version[0] !== 'c') {
         scripts = scripts.concat(cdnLegacy);
     }
 
@@ -218,19 +219,19 @@ function embed(version, scripts, out, fn, optionals) {
 
         // Allow using full URLs in the include arrays
         if (useNPM) {
-          fullURL = path.join(npmLocation, script.replace('stock/', ''));
+            fullURL = path.join(npmLocation, script.replace('stock/', ''));
         } else if (script.indexOf('http') >= 0) {
-          fullURL = script;
+            fullURL = script;
         } else {
-          fullURL = cdnURL + script;
+            fullURL = cdnURL + script;
         }
 
         funs.push(function (next) {
             // If we've allready fetched the required script, just return it.
             if (cachedScripts[fullURL]) {
-              console.log(('   using cached fetch for ' + fullURL).gray);
-              scriptBody += cachedScripts[fullURL] + ';';
-              return next();
+                console.log(('   using cached fetch for ' + fullURL).gray);
+                scriptBody += cachedScripts[fullURL] + ';';
+                return next();
             }
 
             console.log('  ', (fullURL).gray);
@@ -241,18 +242,18 @@ function embed(version, scripts, out, fn, optionals) {
                 //   console.log(optionals, scriptOriginal);
                 //   if (optionals[scriptOriginal]) {
                 //     console.log(`  notice: ${script} is not available for v${version}, skipped.`.yellow)
-                    // return next();
-                  // }
-                  // return next(error, fullURL);
+                // return next();
+                // }
+                // return next(error, fullURL);
                 // }
 
                 if ((body || '').trim().indexOf('<!DOCTYPE') === 0) {
-                  if (optionals[scriptOriginal]) {
-                    console.log(`   ${script.substr(script.lastIndexOf('/') + 1)} is not available for v${version}, skipped..`.yellow);
-                    return next();
-                  }
+                    if (optionals[scriptOriginal]) {
+                        console.log(`   ${script.substr(script.lastIndexOf('/') + 1)} is not available for v${version}, skipped..`.yellow);
+                        return next();
+                    }
 
-                  return next(404, script);
+                    return next(404, script);
                 }
 
                 cachedScripts[fullURL] = body;
@@ -261,15 +262,15 @@ function embed(version, scripts, out, fn, optionals) {
             };
 
             if (useNPM) {
-              // Fetch from npm package instead
-              script = script.replace('stock/', '');
-              fs.readFile(fullURL, 'utf8', (err, data) => {
-                handleScript(err, data);
-              });
+                // Fetch from npm package instead
+                script = script.replace('stock/', '');
+                fs.readFile(fullURL, 'utf8', (err, data) => {
+                    handleScript(err, data);
+                });
             } else {
-              request(fullURL, function (error, response, body) {
-                handleScript(error, body);
-              });
+                request(fullURL, function (error, response, body) {
+                    handleScript(error, body);
+                });
             }
         });
     });
@@ -298,7 +299,7 @@ function embed(version, scripts, out, fn, optionals) {
                 .replace('"{{highcharts}}";', scriptBody)
                 .replace('<div style="padding:5px;">', '<div style="padding:5px;display:none;">')
                 .replace('{{additionalScripts}}', additionalScripts)
-                ,
+            ,
             function (err) {
                 if (err) return console.log('Error creating template:', err);
                 if (fn) fn();
@@ -315,7 +316,7 @@ function endMsg() {
 function embedAll(version, includeStyled, includeMaps, includeMoment, includeGantt, optionals) {
     var standard = cdnScriptsStandard.concat(cdnScriptsCommon).concat(cdnAdditional),
         styled = cdnScriptsStyled.concat(cdnScriptsCommon).concat(cdnAdditional)
-    ;
+        ;
 
     optionals = optionals || {};
 
@@ -326,7 +327,7 @@ function embedAll(version, includeStyled, includeMaps, includeMoment, includeGan
 
         // Map collections are user supplied, so we need to allow them to 404
         cdnMapCollection.forEach((url) => {
-          optionals[url] = 1;
+            optionals[url] = 1;
         });
     }
 
@@ -351,97 +352,97 @@ function embedAll(version, includeStyled, includeMaps, includeMoment, includeGan
     useNPM = process.env.HIGHCHARTS_USE_NPM || cdnURL === 'npm';
 
     if (useNPM) {
-      // Reset cdn url to official CDN in case we need to do a fallback
-      cdnURL = officialCDNURL;
+        // Reset cdn url to official CDN in case we need to do a fallback
+        cdnURL = officialCDNURL;
 
-      // See if we need to check the parent folder instead
-      if (!fs.existsSync(npmLocation)) {
-        npmLocation = __dirname + '/../highcharts/';
-      }
+        // See if we need to check the parent folder instead
+        if (!fs.existsSync(npmLocation)) {
+            npmLocation = __dirname + '/../highcharts/';
+        }
 
-      // Check if the NPM package has been installed before doing anything.
-      if (!fs.existsSync(npmLocation)) {
-        console.log('Could not get Highcharts through NPM: the NPM package is not installed! Using fallback to CDN.'.red);
-        useNPM = false;
-      } else {
-        highchartsPackage = require(path.join(npmLocation, 'package.json'));
-        version = highchartsPackage.version || version;
-        console.log(`Bundling in Highcharts from NPM package @${highchartsPackage.version}..`.gray);
-      }
+        // Check if the NPM package has been installed before doing anything.
+        if (!fs.existsSync(npmLocation)) {
+            console.log('Could not get Highcharts through NPM: the NPM package is not installed! Using fallback to CDN.'.red);
+            useNPM = false;
+        } else {
+            highchartsPackage = require(path.join(npmLocation, 'package.json'));
+            version = highchartsPackage.version || version;
+            console.log(`Bundling in Highcharts from NPM package @${highchartsPackage.version}..`.gray);
+        }
     } else {
-      console.log(('Pulling Highcharts from CDN (' + version + ')..').gray);
+        console.log(('Pulling Highcharts from CDN (' + version + ')..').gray);
     }
 
     embed(
-      version,
-      standard,
-      'export',
-      function () {
-        if (includeStyled) {
-            console.log('Including styled mode support'.green);
-            embed(
-              false,
-              styled,
-              'export_styled',
-              endMsg,
-              optionals
-            );
-        } else {
-         endMsg();
-        }
-      },
-      optionals
+        version,
+        standard,
+        'export',
+        function () {
+            if (includeStyled) {
+                console.log('Including styled mode support'.green);
+                embed(
+                    false,
+                    styled,
+                    'export_styled',
+                    endMsg,
+                    optionals
+                );
+            } else {
+                endMsg();
+            }
+        },
+        optionals
     );
 }
 
 function affirmative(str) {
-  str = (str || '').toUpperCase();
-  return str === 'YES' || str === 'Y' || str === '1';
+    str = (str || '').toUpperCase();
+    return str === 'YES' || str === 'Y' || str === '1';
 }
 
 function getOptionals(include, forceInclude) {
-  let optionalScripts = {};
+    let optionalScripts = {};
 
-  Object.keys(cdnScriptsOptional).forEach((url) => {
-    optionalScripts[url] = 1;
-  });
+    Object.keys(cdnScriptsOptional).forEach((url) => {
+        optionalScripts[url] = 1;
+    });
 
-  // Build list of optionals
-  Object.keys(cdnScriptsQuery).forEach((name) => {
-    if (forceInclude || (!include || affirmative(include[name]))) {
-      optionalScripts[cdnScriptsQuery[name]] = 1;
-      cdnAdditional.push(cdnScriptsQuery[name]);
-    }
-  });
+    // Build list of optionals
+    Object.keys(cdnScriptsQuery).forEach((name) => {
+        if (forceInclude || (!include || affirmative(include[name]))) {
+            optionalScripts[cdnScriptsQuery[name]] = 1;
+            cdnAdditional.push(cdnScriptsQuery[name]);
+        }
+    });
 
-  return optionalScripts;
+    return optionalScripts;
 }
 
 function startPrompt() {
-  prompt.message = '';
-  prompt.start();
+    prompt.message = '';
+    prompt.start();
 
-  prompt.get(schema, function (err, result) {
-    result.agree = result.agree.toUpperCase();
+    prompt.get(schema, function (err, result) {
+        result.agree = result.agree.toUpperCase();
 
-    cdnURL = result.cdnURL || cdnURL;
+        cdnURL = result.cdnURL || cdnURL;
 
-    if (result.agree === 'Y' || result.agree === 'YES') {
-        embedAll(result.version,
-                 affirmative(result.styledMode),
-                 affirmative(result.maps),
-                 affirmative(result.moment),
-                 affirmative(result.gantt),
-                 getOptionals(result)
-        );
-    } else {
-        console.log('License terms not accepted, aborting'.red);
-    }
-  });
+        if (result.agree === 'Y' || result.agree === 'YES') {
+            embedAll(result.version,
+                affirmative(result.styledMode),
+                affirmative(result.maps),
+                affirmative(result.moment),
+                affirmative(result.gantt),
+                getOptionals(result)
+            );
+        } else {
+            console.log('License terms not accepted, aborting'.red);
+        }
+    });
 }
 
 function useIfDefined(what, def) {
-  return (typeof what === 'undefined' ? def : what);
+    return (typeof what === 'undefined' ? def : what);
 }
 
 if (process.env.ACCEPT_HIGHCHARTS_LICENSE) {
@@ -449,12 +450,12 @@ if (process.env.ACCEPT_HIGHCHARTS_LICENSE) {
     cdnURL = process.env.HIGHCHARTS_CDN || cdnURL;
 
     embedAll(
-      useIfDefined(process.env.HIGHCHARTS_VERSION, 'latest'),
-      useIfDefined(process.env.HIGHCHARTS_USE_STYLED, true),
-      useIfDefined(process.env.HIGHCHARTS_USE_MAPS, true),
-      useIfDefined(process.env.HIGHCHARTS_MOMENT, false),
-      useIfDefined(process.env.HIGHCHARTS_USE_GANTT, true),
-      getOptionals(cdnScriptsOptional, true)
+        useIfDefined(process.env.HIGHCHARTS_VERSION, 'latest'),
+        useIfDefined(process.env.HIGHCHARTS_USE_STYLED, true),
+        useIfDefined(process.env.HIGHCHARTS_USE_MAPS, true),
+        useIfDefined(process.env.HIGHCHARTS_MOMENT, false),
+        useIfDefined(process.env.HIGHCHARTS_USE_GANTT, true),
+        getOptionals(cdnScriptsOptional, true)
     );
 } else {
     console.log(fs.readFileSync(__dirname + '/msg/licenseagree.msg').toString().bold);

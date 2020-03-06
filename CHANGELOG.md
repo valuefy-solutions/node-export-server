@@ -1,3 +1,30 @@
+# 2.0.27
+  * Added `venn` module to build script
+
+# 2.0.26
+  * Added `coloraxis` module to build script
+
+# 2.0.25
+  * Fixed issue with optional scripts when using env variables to accept prompts
+
+# 2.0.23
+  * Fixed issue with optional dependencies when installing headless
+
+# 2.0.20-2.0.22
+  * Fixed pathing issue with NPM build when installing globally
+
+# 2.0.19
+  * Added support for fetching sources through `npm` for automated builds. To use, set `HIGHCHARTS_CDN` to `npm`.
+  * Added support for `pareto` charts
+  * Fixed issue with script concatination causing exporting errors when including certain modules
+
+# 2.0.18
+  * Added HIGHCHARTS_CDN variable support for build process
+
+# 2.0.17
+  * Added support for 7.1 charts
+  * Updated dependencies
+
 # 2.0.16
 
   * Added support for bullet charts
